@@ -4,6 +4,7 @@ import math
 
 from .config import DECK_BUTTON_SIZE
 
+
 class ClockButtonBuffer(BytesIO):
     """
     Extension for BytesIO so that hashing is unique
@@ -12,6 +13,7 @@ class ClockButtonBuffer(BytesIO):
     """
 
     current_time = (0, 0)
+
     def set_current_time(self, hours, mins):
         self.current_time = (hours, mins)
 
@@ -26,27 +28,33 @@ def draw_time(time_secs):
     """
 
     image_buffer = ClockButtonBuffer()
-    surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, DECK_BUTTON_SIZE, DECK_BUTTON_SIZE)
+    surface = cairo.ImageSurface(
+        cairo.FORMAT_ARGB32, DECK_BUTTON_SIZE, DECK_BUTTON_SIZE
+    )
     cr = cairo.Context(surface)
     cr.set_source_rgba(1, 1, 1)
     cr.move_to(DECK_BUTTON_SIZE / 2, DECK_BUTTON_SIZE / 2)
     arc = 2 * math.pi * (time_secs // 60 % 60) / 60
     hours = int(time_secs // 3600)
-    cr.arc(DECK_BUTTON_SIZE / 2, DECK_BUTTON_SIZE / 2, DECK_BUTTON_SIZE / 3, -math.pi / 2, -math.pi / 2 + arc)
+    cr.arc(
+        DECK_BUTTON_SIZE / 2,
+        DECK_BUTTON_SIZE / 2,
+        DECK_BUTTON_SIZE / 3,
+        -math.pi / 2,
+        -math.pi / 2 + arc,
+    )
     cr.close_path()
     cr.fill()
 
     if hours > 0:
-        cr.select_font_face("Sans",
-            cairo.FONT_SLANT_NORMAL,
-            cairo.FONT_WEIGHT_BOLD)
+        cr.select_font_face("Sans", cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
 
-        cr.set_font_size (50.0);
+        cr.set_font_size(50.0)
         xb, yb, w, h, dx, dy = cr.text_extents(str(hours))
         x = DECK_BUTTON_SIZE / 2 - (w / 2 + xb)
         y = DECK_BUTTON_SIZE / 2 - (h / 2 + yb)
 
-        cr.move_to(x, y);
+        cr.move_to(x, y)
         cr.set_source_rgba(0.5, 0.5, 0.5)
         cr.show_text(str(hours))
 
@@ -57,23 +65,23 @@ def draw_time(time_secs):
 
 
 def draw_colour(code, colour):
-    surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, DECK_BUTTON_SIZE, DECK_BUTTON_SIZE)
+    surface = cairo.ImageSurface(
+        cairo.FORMAT_ARGB32, DECK_BUTTON_SIZE, DECK_BUTTON_SIZE
+    )
     cr = cairo.Context(surface)
-    rgba = [x / 255 for x in PIL.ImageColor.getcolor('#' + colour, "RGB")] + [1]
+    rgba = [x / 255 for x in PIL.ImageColor.getcolor("#" + colour, "RGB")] + [1]
     cr.set_source_rgba(*rgba)
     cr.rectangle(0, 0, DECK_BUTTON_SIZE, DECK_BUTTON_SIZE)
     cr.fill()
 
-    cr.select_font_face("Sans",
-        cairo.FONT_SLANT_NORMAL,
-        cairo.FONT_WEIGHT_BOLD)
+    cr.select_font_face("Sans", cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
 
-    cr.set_font_size (80.0);
+    cr.set_font_size(80.0)
     xb, yb, w, h, dx, dy = cr.text_extents(code[0])
     x = DECK_BUTTON_SIZE / 2 - (w / 2 + xb)
     y = 0.9 * DECK_BUTTON_SIZE / 2 - (h / 2 + yb)
 
-    cr.move_to(x, y);
+    cr.move_to(x, y)
     if min(rgba[:2]) > 0.5:
         cr.set_source_rgba(0, 0, 0)
     else:

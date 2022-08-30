@@ -23,12 +23,17 @@ from .utils import draw_time
 
 # Ew.
 filetype_guess = filetype.guess
+
+
 def _filetype_guess(*args, **kwargs):
     try:
         return filetype_guess(*args, **kwargs)
     except TypeError:
         return True
+
+
 display.image_filter.filetype.guess = _filetype_guess
+
 
 class TickerStreamDeckServer(api.StreamDeckServer):
     """
@@ -41,7 +46,7 @@ class TickerStreamDeckServer(api.StreamDeckServer):
         self.ticker = ticker
 
     def export_config(self, output_file: str) -> None:
-        pass # we don't actually want to export this config
+        pass  # we don't actually want to export this config
 
     def open_config(self, config_file: str):
         # Make sure we have a working config file first
@@ -50,14 +55,15 @@ class TickerStreamDeckServer(api.StreamDeckServer):
         # from api.py
         config = self.ticker.merge_streamdeck_config(
             {"streamdeck_ui_version": api.CONFIG_FILE_VERSION, "state": self.state},
-            with_images=True
+            with_images=True,
         )
         self.state = {}
         for deck_id, deck in config["state"].items():
             deck["buttons"] = {
                 int(page_id): {
                     int(button_id): button for button_id, button in buttons.items()
-                } for page_id, buttons in deck.get("buttons", {}).items()
+                }
+                for page_id, buttons in deck.get("buttons", {}).items()
             }
             self.state[deck_id] = deck
 
@@ -81,13 +87,17 @@ class TickerApplication:
                 page = self.api.get_page(deck_id)
                 layout = self.api.get_deck(deck_id)["layout"]
                 key_count = layout[0] * layout[1]
-                text = self.api.get_button_text(deck_id, page if page != 1 else 0, key_count - 1)
+                text = self.api.get_button_text(
+                    deck_id, page if page != 1 else 0, key_count - 1
+                )
 
                 project, elapsed = self.ticker.tocker.elapsed()
                 if project:
                     if text != f"@{project}":
                         self.api.set_page(deck_id, 0)
-                        self.api.set_button_text(deck_id, 0, key_count - 1, f"@{project}")
+                        self.api.set_button_text(
+                            deck_id, 0, key_count - 1, f"@{project}"
+                        )
                     image = draw_time(elapsed.total_seconds())
                     self.api.set_button_icon(deck_id, 0, key_count - 1, image)
 
@@ -156,14 +166,15 @@ class TickerApplication:
             deck["buttons"] = {
                 int(page_id): {
                     int(button_id): button for button_id, button in buttons.items()
-                } for page_id, buttons in deck.get("buttons", {}).items()
+                }
+                for page_id, buttons in deck.get("buttons", {}).items()
             }
             self.api.state[deck_id] = deck
 
     def run(self):
         gui.StreamDeckServer = partial(TickerStreamDeckServer, self.ticker)
 
-        self.timer=QTimer()
+        self.timer = QTimer()
         self.timer.timeout.connect(self.handle_update_time)
 
         # from gui.py
@@ -181,18 +192,23 @@ class TickerApplication:
         self.api.stop()
         return code
 
+
 def merge_streamdeck_config(ticker, streamdeck_input, with_images=False):
     env = Environment(
-        loader=FileSystemLoader(CONFIG_DIR),
-        autoescape=select_autoescape()
+        loader=FileSystemLoader(CONFIG_DIR), autoescape=select_autoescape()
     )
     template = env.get_template("streamdeck_ui.json.j2")
-    for device, deck in streamdeck_input['state'].items():
-        buttons = len(list(deck['buttons'].values())[0]) - 1
+    for device, deck in streamdeck_input["state"].items():
+        buttons = len(list(deck["buttons"].values())[0]) - 1
         items = ticker.entries
-        pages = [{
-            'entries': {code: ticker.projects[code] for code in items[i: i + buttons]}
-        } for i in range(0, len(items), buttons)]
+        pages = [
+            {
+                "entries": {
+                    code: ticker.projects[code] for code in items[i : i + buttons]
+                }
+            }
+            for i in range(0, len(items), buttons)
+        ]
         inset_json = template.render(
             len=len,
             enumerate=enumerate,
@@ -201,17 +217,17 @@ def merge_streamdeck_config(ticker, streamdeck_input, with_images=False):
             str=str,
             list=list,
             pages=pages,
-            buttons=buttons + 1
+            buttons=buttons + 1,
         )
         inset = json.loads(inset_json)
 
         if with_images:
-            for page in inset['buttons'].values():
+            for page in inset["buttons"].values():
                 for entry in page.values():
                     if "text" in entry:
                         project = ticker.projects.get(entry["text"], {})
                         if "image" in project:
                             entry["icon"] = project["image"]
-        streamdeck_input['state'][device] = inset
+        streamdeck_input["state"][device] = inset
 
     return streamdeck_input

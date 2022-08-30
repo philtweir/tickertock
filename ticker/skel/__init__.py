@@ -4,16 +4,14 @@ import pathlib
 from xdg import xdg_config_home
 from jinja2 import Environment, select_autoescape, FileSystemLoader
 
+
 def initialize(clockify_api_key, clockify_workspace_id):
     target = xdg_config_home() / "ticker"
     target.mkdir(exist_ok=True)
     here = pathlib.Path(__file__).parent
     (target / "assets").mkdir(exist_ok=True)
 
-    env = Environment(
-        loader=FileSystemLoader(here),
-        autoescape=select_autoescape()
-    )
+    env = Environment(loader=FileSystemLoader(here), autoescape=select_autoescape())
 
     template = env.get_template("config.toml.j2")
     with open(target / "config.toml", "w") as f:

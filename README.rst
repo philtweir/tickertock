@@ -13,6 +13,31 @@ With many thanks to the StreamDeck and `streamdeck_ui` folks, who
 did 99.99% of the work, which I just in imported (aside from the
 other open source libs obvs :D).
 
+Installation
+------------
+
+"Nothing works, there's no setup.py file!"
+
+That's right. I have fought with (and alongside) pipenv, poetry, generations
+of pip, conda, setuptools, distutils and others. Now I there is a standard and
+I am sticking to it. In PEP621, may we stand tall. It may be half-supported, and
+have weirdnesses and I spent half an hour trying to get package data to
+install (like every other Python packaging experience that I have had), but
+it's a PEP, and some day we will live in and an Avalon of packaging consistency.
+And this package will install.
+
+Make sure that you have a recent pip and setuptools, then:
+
+    pip install .
+
+"Why are there no tests"
+
+Because this spent most of its life as a gluescript and custom changes to
+streamdeck_ui, which did not deserve to pass tests. Now I have got frustrated
+patching it, and other people want to use this, so this is step 1 of tidying
+up. The other steps involve tests, once actual use for this is established.
+In the meantime, PR heroes welcome.
+
 Usage
 -----
 

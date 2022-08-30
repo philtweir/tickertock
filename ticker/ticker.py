@@ -9,9 +9,8 @@ from . import clockify, ui
 from .config import CONFIG_DIR, STREAMDECK_IMAGE_DIR, DECK_BUTTON_SIZE
 from .utils import draw_colour
 
-TOCKERS = {
-    'clockify': clockify.ClockifyTocker
-}
+TOCKERS = {"clockify": clockify.ClockifyTocker}
+
 
 class Ticker:
     """
@@ -50,17 +49,17 @@ class Ticker:
                 result = self.tocker.start_time_entry("(to fill in)", pid)
             except Exception as e:
                 print(e)
-                logging.error('could not toggl')
+                logging.error("could not toggl")
                 success = False
             else:
                 logging.info(f"Toggled {project}")
                 success = project
-        elif project == 'None':
+        elif project == "None":
             current_timer = self.tocker.stop_time_entry()
-            logging.info('Toggl off')
+            logging.info("Toggl off")
             success = True
         else:
-            logging.error('Unknown project')
+            logging.error("Unknown project")
             success = False
 
         return success
@@ -69,15 +68,15 @@ class Ticker:
         if not CONFIG_DIR.exists():
             raise RuntimeError("Must initialize with Clockify API key [ticker init]")
 
-        with open(CONFIG_DIR / 'config.toml', 'r') as f:
+        with open(CONFIG_DIR / "config.toml", "r") as f:
             config = toml.load(f)
 
         self.config = config
 
-        with open(CONFIG_DIR / 'projects.toml', 'r') as f:
+        with open(CONFIG_DIR / "projects.toml", "r") as f:
             project_config = toml.load(f)
         self._projects = {
             key: {"name": project} if isinstance(project, str) else project
-            for key, project in project_config['projects'].items()
+            for key, project in project_config["projects"].items()
         }
-        self.entries = project_config['page']['entries']
+        self.entries = project_config["page"]["entries"]

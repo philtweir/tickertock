@@ -1,5 +1,5 @@
-Ticker
-======
+Tickertock
+==========
 
 A wrapper for `streamdeck_ui` to link it up to Clockify.
 

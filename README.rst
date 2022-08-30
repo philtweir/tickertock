@@ -16,11 +16,17 @@ other open source libs obvs :D).
 Installation
 ------------
 
+"Nothing works, there's no buttons!"
+
+Do you actually have a StreamDeck? Have a look at [Elgato's website](https://www.elgato.com/en/stream-deck)
+and imagine yourself doing something way less cool with one. This has been tested
+with 6- and 15- key decks on Linux.
+
 "Nothing works, there's no setup.py file!"
 
 That's right. I have fought with (and alongside) pipenv, poetry, generations
 of pip, conda, setuptools, distutils and others. Now I there is a standard and
-I am sticking to it. In PEP621, may we stand tall. It may be half-supported, and
+I am sticking to it. PEP621 is the hill I shall defend. It may be half-supported, and
 have weirdnesses and I spent half an hour trying to get package data to
 install (like every other Python packaging experience that I have had), but
 it's a PEP, and some day we will live in and an Avalon of packaging consistency.
@@ -43,14 +49,14 @@ Usage
 
 To initialize:
 
-    ticker init --clockify-api-key APIKEY --clockify-workspace-id WORKSPACEID
+    tickertock init --clockify-api-key APIKEY --clockify-workspace-id WORKSPACEID
 
-Once this is up, you should have a directory `~/.config/ticker` with a bunch
+Once this is up, you should have a directory `~/.config/tickertock` with a bunch
 of config. In particular, a `projects.toml` file with your projects from
 Clockify. You can rearrange the order of these (or remove any) from the `entries`
 list to change how they get ordered on your StreamDeck.
 
-If you want fancier icons, put 128x128 icons into the `~/.config/ticker/assets`
+If you want fancier icons, put 128x128 icons into the `~/.config/tickertock/assets`
 folder with lowercase names (PNGs) matching your projects (e.g. General ->
 general.png)
 
@@ -69,23 +75,23 @@ and updating the matching name in `entries`. For instance:
 
 This works provided you keep the `name = "..."` matching Clockify.
 
-Once it is set up, you can run `ticker ui`. This is a thin wrapper around
+Once it is set up, you can run `tickertock ui`. This is a thin wrapper around
 the StreamDeck UI tool and you should get a taskbar icon of theirs appearing.
 When you toggle to timetrack, this image will update to your project logo.
 In theory, you could try configuring the StreamDeck via their configuration UI,
 but I don't know how that'll go for you, as we patch it on load. YMMV.
 
-You can use `ticker writeout` to get output config if you just want to get
+You can use `tickertock writeout` to get output config if you just want to get
 an initial setup that you can customize with the full streamdeck_ui
 functionality.
 
 Scripting Clockify is also then as easy as:
 
-    ticker toggle Accounts
+    tickertock toggle Accounts
 
 to start the Accounts project tracking, and
 
-    ticker toggle None
+    tickertock toggle None
 
 to stop any active tracking.
 

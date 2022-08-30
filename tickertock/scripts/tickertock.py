@@ -11,10 +11,10 @@ import toml
 import click
 from xdg import xdg_cache_home
 
-from ticker import __version__
-from ticker.ui import TickerApplication, merge_streamdeck_config
-from ticker.skel import initialize as skel_initialize
-from ticker.ticker import Ticker
+from tickertock import __version__
+from tickertock.ui import TickertockApplication, merge_streamdeck_config
+from tickertock.skel import initialize as skel_initialize
+from tickertock.tickertock import Tickertock
 
 logging.basicConfig(filename=xdg_cache_home() / "settoggl.log", level=logging.INFO)
 
@@ -25,7 +25,7 @@ _BEAR_COMMANDS = ("init", "version")
 @click.pass_context
 def cli(ctx):
     if ctx.invoked_subcommand not in _BEAR_COMMANDS:
-        ctx.obj = Ticker("clockify")
+        ctx.obj = Tickertock("clockify")
         ctx.obj.initialize()
 
 
@@ -59,7 +59,7 @@ def writeout(obj, deck):
 @cli.command()
 @click.pass_obj
 def version(obj):
-    print("Ticker version:", __version__)
+    print("Tickertock version:", __version__)
     print("https://xkcd.com/479/")
 
 
@@ -67,7 +67,7 @@ def version(obj):
 @click.pass_obj
 def ui(obj):
     sys.argv = ["streamdeck", "-n"] + sys.argv[3:]
-    application = TickerApplication(obj)
+    application = TickertockApplication(obj)
     code = application.run()
     return code
 
@@ -80,9 +80,9 @@ def init(clockify_api_key, clockify_workspace_id):
         clockify_api_key=clockify_api_key, clockify_workspace_id=clockify_workspace_id
     )
 
-    ticker = Ticker("clockify")
-    ticker.initialize()
-    projects = ticker.tocker.get_all_projects()
+    tickertock = Tickertock("clockify")
+    tickertock.initialize()
+    projects = tickertock.tocker.get_all_projects()
     projects = [
         p
         for p in projects

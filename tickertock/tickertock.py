@@ -12,11 +12,11 @@ from .utils import draw_colour
 TOCKERS = {"clockify": clockify.ClockifyTocker}
 
 
-class Ticker:
+class Tickertock:
     """
     Governor class to manage the other bits and pieces, linking
     the "tocker", or timetracking app wrapper, with all the generic
-    behaviour of ticker application.
+    behaviour of tickertock application.
     """
 
     def __init__(self, tocker_type):
@@ -66,7 +66,7 @@ class Ticker:
 
     def load_config(self):
         if not CONFIG_DIR.exists():
-            raise RuntimeError("Must initialize with Clockify API key [ticker init]")
+            raise RuntimeError("Must initialize with Clockify API key [tickertock init]")
 
         with open(CONFIG_DIR / "config.toml", "r") as f:
             config = toml.load(f)

@@ -1,4 +1,5 @@
 import shutil
+import logging
 import pathlib
 from xdg import xdg_config_home
 from jinja2 import Environment, select_autoescape, FileSystemLoader
@@ -14,8 +15,8 @@ def initialize(clockify_api_key, clockify_workspace_id):
         autoescape=select_autoescape()
     )
 
-    template = env.get_template("config.yaml.j2")
-    with open(target / "config.yaml") as f:
+    template = env.get_template("config.toml.j2")
+    with open(target / "config.toml", "w") as f:
         f.write(
             template.render(
                 api_key=clockify_api_key,
@@ -25,3 +26,8 @@ def initialize(clockify_api_key, clockify_workspace_id):
 
     shutil.copyfile(here / "streamdeck_ui.json.j2", target / "streamdeck_ui.json.j2")
     shutil.copyfile(here / "projects.toml", target / "projects.toml")
+
+    for asset in (here / "assets").iterdir():
+        shutil.copyfile(here / "assets" / asset, target / "assets" / asset)
+
+    logging.info("Initialized")

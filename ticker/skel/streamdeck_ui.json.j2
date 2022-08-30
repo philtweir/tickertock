@@ -1,0 +1,35 @@
+{
+            "buttons": {
+{% for p, page in enumerate([pages[0]] + pages) %}
+                "{{ p }}": {
+{% for n, (code, project) in enumerate(list(page['entries'].items())[:buttons - 1]) %}
+                    "{{ n }}": {
+                        "write": "",
+                        {% if isinstance(project.get("image", None), str) %}
+                        "icon": "{{ project["image"] }}",
+                        {% endif %}
+                        "text": "{{ code }}",
+                        "keys": ""
+                    },
+{% endfor %}
+{% if p == 0 %}
+                    "{{ buttons - 1 }}": {
+                        "write": "",
+                        "icon": "",
+                        "text": "NOT RUN",
+                        "keys": ""
+                    }
+{% else %}
+                    "{{ buttons - 1 }}": {
+                        "command": "",
+                        "write": "",
+                        "text": "NOT RUN",
+                        "icon": "{{ streamdeck_image_dir }}/paused.png"
+                    }
+{% endif %}
+                }{% if p < len(pages) %},{% endif %}
+{% endfor %}
+            },
+            "brightness": 99,
+            "page": 1
+}

@@ -1,0 +1,7 @@
+[projects]
+Demo = {"name" = "Demo", "colour" = "012345"}
+
+[page]
+entries = [
+  "Demo"
+]

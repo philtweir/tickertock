@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ticker"
+description = "Streamdeck as a timetracker"
+readme = "README.rst"
+requires-python = ">=3.7"
+keywords = ["timetracking", "clockify"]
+license = {text = "MIT License"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "streamdeck_ui",
+    "jinja2",
+    "clockify",
+    "click",
+    "xdg",
+]
+dynamic = ["version"]
+
+[project.scripts]
+ticker = "ticker.scripts.ticker:cli"
+
+[tool.setuptools.package-data]
+"ticker.skel.assets" = ["*"]
+
+[tool.setuptools.dynamic]
+version = {attr = "ticker.__version__"}

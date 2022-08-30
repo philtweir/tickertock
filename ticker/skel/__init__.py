@@ -28,6 +28,6 @@ def initialize(clockify_api_key, clockify_workspace_id):
     shutil.copyfile(here / "projects.toml", target / "projects.toml")
 
     for asset in (here / "assets").iterdir():
-        shutil.copyfile(here / "assets" / asset, target / "assets" / asset)
+        shutil.copyfile(asset, target / "assets" / asset.name)
 
     logging.info("Initialized")

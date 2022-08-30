@@ -70,8 +70,8 @@ and updating the matching name in `entries`. For instance:
     ...
     [page]
     entries = [
-      "Accounts",
-      ...
+    "Accounts",
+    ...
 
 This works provided you keep the `name = "..."` matching Clockify.
 

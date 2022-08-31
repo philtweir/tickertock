@@ -18,7 +18,7 @@ Installation
 
 "Nothing works, there's no buttons!"
 
-Do you actually have a StreamDeck? Have a look at [Elgato's website](https://www.elgato.com/en/stream-deck)
+Do you actually have a StreamDeck? Have a look at `Elgato's website <https://www.elgato.com/en/stream-deck>`_
 and imagine yourself doing something way less cool with one. This has been tested
 with 6- and 15- key decks on Linux.
 
@@ -29,7 +29,7 @@ of pip, conda, setuptools, distutils and others. Now I there is a standard and
 I am sticking to it. PEP621 is the hill I shall defend. It may be half-supported, and
 have weirdnesses and I spent half an hour trying to get package data to
 install (like every other Python packaging experience that I have had), but
-it's a PEP, and some day we will live in and an Avalon of packaging consistency.
+it's a PEP, and some day we will live in an Avalon of packaging consistency.
 And this package will install.
 
 Make sure that you have a recent pip and setuptools, then:
@@ -65,7 +65,8 @@ asset PNG name, if used) by altering the key in the projects map (e.g. to Accoun
 and updating the matching name in `entries`. For instance:
 
     [projects.Accounts]
-    name = "Accounts System Logs"
+    
+    "Accounts System Logs"
     colour = "9C27B0"
     ...
     [page]
@@ -73,7 +74,7 @@ and updating the matching name in `entries`. For instance:
     "Accounts",
     ...
 
-This works provided you keep the `name = "..."` matching Clockify.
+This works provided you keep the ``name = "..."`` matching Clockify.
 
 Once it is set up, you can run `tickertock ui`. This is a thin wrapper around
 the StreamDeck UI tool and you should get a taskbar icon of theirs appearing.

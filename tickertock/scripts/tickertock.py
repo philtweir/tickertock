@@ -11,6 +11,7 @@ import toml
 import click
 from xdg import xdg_cache_home
 
+from tickertock.config import CONFIG_DIR
 from tickertock import __version__
 from tickertock.ui import TickertockApplication, merge_streamdeck_config
 from tickertock.skel import initialize as skel_initialize
@@ -92,7 +93,7 @@ def init(clockify_api_key, clockify_workspace_id):
         )
         and not p.get("archived", True)
     ]
-    print(projects)
+    print("Loaded for", len(projects), "projects")
     project_toml = {
         "projects": {
             p["name"]: {"name": p["name"], "colour": p["color"].replace("#", "")}

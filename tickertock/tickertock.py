@@ -11,6 +11,8 @@ from .utils import draw_colour
 
 TOCKERS = {"clockify": clockify.ClockifyTocker}
 
+class UninitializedError(Exception):
+    pass
 
 class Tickertock:
     """
@@ -30,7 +32,7 @@ class Tickertock:
 
     def load_images(self):
         for code, project in self.projects.items():
-            image_path = os.path.join(STREAMDECK_IMAGE_DIR, f"{code.lower()}.png")
+            image_path = STREAMDECK_IMAGE_DIR / f"{code.lower()}.png"
             if os.path.exists(image_path):
                 project["image"] = image_path
             elif "colour" in project:
@@ -66,7 +68,7 @@ class Tickertock:
 
     def load_config(self):
         if not CONFIG_DIR.exists():
-            raise RuntimeError("Must initialize with Clockify API key [tickertock init]")
+            raise UninitializedError("Must initialize with Clockify API key [tickertock init]")
 
         with open(CONFIG_DIR / "config.toml", "r") as f:
             config = toml.load(f)

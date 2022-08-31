@@ -8,6 +8,7 @@ where we shouldn't (e.g. create_tray).
 """
 
 import filetype
+import json
 import datetime
 from functools import partial
 from streamdeck_ui import gui, api, display
@@ -18,8 +19,10 @@ from PySide2.QtGui import QIcon, QPixmap, QImage
 from PySide2.QtCore import QTimer
 from PySide2.QtWidgets import QSystemTrayIcon
 from StreamDeck.Devices import StreamDeck
+from jinja2 import Environment, select_autoescape, FileSystemLoader
 
 from .utils import draw_time
+from .config import CONFIG_DIR, STREAMDECK_IMAGE_DIR
 
 # Ew.
 filetype_guess = filetype.guess
@@ -53,7 +56,8 @@ class TickertockStreamDeckServer(api.StreamDeckServer):
         super().open_config(config_file)
 
         # from api.py
-        config = self.tickertock.merge_streamdeck_config(
+        config = merge_streamdeck_config(
+            self.tickertock,
             {"streamdeck_ui_version": api.CONFIG_FILE_VERSION, "state": self.state},
             with_images=True,
         )

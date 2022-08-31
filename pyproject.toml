@@ -25,6 +25,7 @@ dynamic = ["version"]
 tickertock = "tickertock.scripts.tickertock:cli"
 
 [tool.setuptools.package-data]
+"tickertock.skel" = ["*"]
 "tickertock.skel.assets" = ["*"]
 
 [tool.setuptools.dynamic]

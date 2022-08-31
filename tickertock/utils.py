@@ -1,4 +1,5 @@
 import cairo
+import PIL
 from io import BytesIO
 import math
 

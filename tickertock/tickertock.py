@@ -33,8 +33,8 @@ class Tickertock:
     def load_images(self):
         for code, project in self.projects.items():
             image_path = STREAMDECK_IMAGE_DIR / f"{code.lower()}.png"
-            if os.path.exists(image_path):
-                project["image"] = image_path
+            if image_path.exists():
+                project["image"] = str(image_path)
             elif "colour" in project:
                 project["image"] = draw_colour(code, project["colour"])
 

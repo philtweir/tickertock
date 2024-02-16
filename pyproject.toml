@@ -13,8 +13,12 @@ classifiers = [
     "Programming Language :: Python :: 3",
 ]
 dependencies = [
-    "streamdeck_ui",
+    "streamdeck_ui>2.0",
+    "pycairo",
     "jinja2",
+    "filetype",
+    "toml",
+    "PySide2",
     "clockify",
     "click",
     "xdg",

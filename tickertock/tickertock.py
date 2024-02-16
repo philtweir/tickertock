@@ -1,12 +1,7 @@
-import PIL
 import toml
-import os
 import logging
-import json
-from jinja2 import Environment, select_autoescape, FileSystemLoader
-import cairo
-from . import clockify, ui
-from .config import CONFIG_DIR, STREAMDECK_IMAGE_DIR, DECK_BUTTON_SIZE
+from . import clockify
+from .config import CONFIG_DIR, STREAMDECK_IMAGE_DIR
 from .utils import draw_colour
 
 TOCKERS = {"clockify": clockify.ClockifyTocker}

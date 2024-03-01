@@ -13,11 +13,11 @@ import datetime
 from functools import partial
 from streamdeck_ui import gui, api, display
 from pynput.keyboard import Controller
-from PySide2.QtWidgets import QApplication
+from PySide6.QtWidgets import QApplication
 from streamdeck_ui.config import LOGO
-from PySide2.QtGui import QIcon, QPixmap, QImage
-from PySide2.QtCore import QTimer
-from PySide2.QtWidgets import QSystemTrayIcon
+from PySide6.QtGui import QIcon, QPixmap, QImage, QDesktopServices, QAction
+from PySide6.QtCore import QTimer, QUrl
+from PySide6.QtWidgets import QSystemTrayIcon, QMainWindow, QMenu
 from StreamDeck.Devices import StreamDeck
 from jinja2 import Environment, select_autoescape, FileSystemLoader
 
@@ -51,6 +51,12 @@ class TickertockStreamDeckServer(api.StreamDeckServer):
     def export_config(self, output_file: str) -> None:
         pass  # we don't actually want to export this config
 
+    def import_config(self, config_file: str) -> None:
+        self.stop()
+        self.open_config(config_file)
+        self._save_state()
+        self.start()
+
     def open_config(self, config_file: str):
         # Make sure we have a working config file first
         super().open_config(config_file)
@@ -59,6 +65,7 @@ class TickertockStreamDeckServer(api.StreamDeckServer):
         config = merge_streamdeck_config(
             self.tickertock,
             {"streamdeck_ui_version": api.CONFIG_FILE_VERSION, "state": self.state},
+            self.get_deck,
             with_images=True,
         )
         self.state = {}
@@ -158,9 +165,26 @@ class TickertockApplication:
         self._sd_create_tray = gui.create_tray
         gui.create_tray = self.create_tray
 
-    def create_tray(self, *args, **kwargs):
-        self.tray = self._sd_create_tray(*args, **kwargs)
-        return self.tray
+    def launch_editor(self):
+        toml = CONFIG_DIR / "projects.toml"
+        QDesktopServices.openUrl(QUrl(str(toml)));
+
+    def create_tray(self, logo: QIcon, app: QApplication, main_window: QMainWindow) -> QSystemTrayIcon:
+        tray = QSystemTrayIcon(logo, app)
+        menu = QMenu()
+        action_tickertock = QAction("Configure Tickertock...", main_window)
+        action_tickertock.triggered.connect(self.launch_editor)
+        action_configure = QAction("Configure Streamdeck UI...", main_window)
+        action_configure.triggered.connect(main_window.bring_to_top)
+        menu.addAction(action_tickertock)
+        menu.addAction(action_configure)
+        menu.addSeparator()
+        action_exit = QAction("Exit", main_window)
+        action_exit.triggered.connect(app.exit)
+        menu.addAction(action_exit)
+        tray.setContextMenu(menu)
+        self.tray = tray
+        return tray
 
     def _load_streamdeck_config(self):
         # from api.py
@@ -197,13 +221,19 @@ class TickertockApplication:
         return code
 
 
-def merge_streamdeck_config(tickertock, streamdeck_input, with_images=False):
+def merge_streamdeck_config(tickertock, streamdeck_input, get_deck, with_images=False):
     env = Environment(
         loader=FileSystemLoader(CONFIG_DIR), autoescape=select_autoescape()
     )
     template = env.get_template("streamdeck_ui.json.j2")
     for device, deck in streamdeck_input["state"].items():
-        buttons = len(list(deck["buttons"].values())[0]) - 1
+        try:
+            deck = get_deck(device)
+            layout = deck["layout"]
+            buttons = layout[0] * layout[1]
+        except:
+            buttons = len(list(deck["buttons"].values())[0]) - 1
+
         items = tickertock.entries
         pages = [
             {

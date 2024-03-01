@@ -117,6 +117,18 @@ showing all your projects. It should correctly rearrange if you plug a bigger
 or smaller deck in, but I have not tried with multiple at once (should be
 fixable by a PR if it doesn't work, as we always loop through attached decks).
 
+Notes
+-----
+
+Recently, I noticed a change needed to be added to streamdeck_ui to successfully
+run:
+
+    image_filter:31    if kind is None and isinstance(self.file, str):
+
+As the project is moving to `streamdeck-linux-gui`, this does not seem sensible
+to PR to the old project, but instead to update `tickertock` to run with the new
+one first.
+
 License
 -------
 

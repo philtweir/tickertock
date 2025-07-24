@@ -9,11 +9,12 @@ import sys
 import os
 import toml
 import click
+import time
 from xdg import xdg_cache_home
 
 from tickertock.config import CONFIG_DIR
 from tickertock import __version__
-from tickertock.ui import TickertockApplication, merge_streamdeck_config
+from tickertock.ui import TickertockApplication, merge_streamdeck_config, TickertockStreamDeckServer
 from tickertock.skel import initialize as skel_initialize
 from tickertock.tickertock import Tickertock
 
@@ -42,19 +43,40 @@ def toggle(obj, project):
 
 
 @cli.command()
-@click.argument("deck")
+@click.argument("deckfile", required=False)
 @click.pass_obj
-def writeout(obj, deck):
-    shutil.copyfile(deck, f'{deck}.{datetime.datetime.now().strftime("%s")}.bak')
-    with open(deck, "r") as f:
-        streamdeck_input = json.load(f)
+def writeout(obj, deckfile):
+    application = TickertockApplication(obj)
+    if deckfile:
+        shutil.copyfile(deckfile, f'{deckfile}.{datetime.datetime.now().strftime("%s")}.bak')
+        with open(deckfile, "r") as f:
+            streamdeck_input = json.load(f)
+    else:
+        streamdeck_input = {
+                "state": {}
+        }
 
-    streamdeck_input = merge_streamdeck_config(obj, streamdeck_input)
+    server = TickertockStreamDeckServer(obj)
+    server.start()
+    print("Waiting for decks to attach (3s)")
+    time.sleep(3)
+    print("Found:")
+    for deck in server.decks:
+        print("  ", deck)
+        if deck not in streamdeck_input["state"]:
+            streamdeck_input["state"][deck] = {}
+    streamdeck_input = merge_streamdeck_config(
+        obj,
+        streamdeck_input,
+        get_deck=server.get_deck,
+        with_images=False,
+    )
 
     HOME = os.environ.get("HOME")
     with open(os.path.join(HOME, ".streamdeck_ui.json"), "w") as f:
         json.dump(streamdeck_input, f)
     logging.info("Streamdeck UI configuration written")
+    server.stop()
 
 
 @cli.command()

@@ -231,8 +231,9 @@ def merge_streamdeck_config(tickertock, streamdeck_input, get_deck, with_images=
             deck = get_deck(device)
             layout = deck["layout"]
             buttons = layout[0] * layout[1]
-        except:
-            buttons = len(list(deck["buttons"].values())[0]) - 1
+        except Exception as e:
+            print(e)
+            buttons = len(list(deck["buttons"].values())[0])
 
         items = tickertock.entries
         pages = [
@@ -251,7 +252,7 @@ def merge_streamdeck_config(tickertock, streamdeck_input, get_deck, with_images=
             str=str,
             list=list,
             pages=pages,
-            buttons=buttons + 1,
+            buttons=buttons,
         )
         inset = json.loads(inset_json)
 
@@ -264,4 +265,5 @@ def merge_streamdeck_config(tickertock, streamdeck_input, get_deck, with_images=
                             entry["icon"] = project["image"]
         streamdeck_input["state"][device] = inset
 
+    streamdeck_input["streamdeck_ui_version"] = 1
     return streamdeck_input

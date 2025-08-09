@@ -28,6 +28,8 @@ class ClockifyTocker:
 
     def initialize(self):
         projects = self.get_all_projects()
+        for project in projects:
+            print(project['name'])
         self.project_ids = {proj["name"]: proj["id"] for proj in projects}
 
     def get_project_id(self, project):
